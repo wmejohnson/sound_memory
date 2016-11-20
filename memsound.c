@@ -47,12 +47,10 @@ int main(int argc, char ** argv){
 		}
 	}
 	
-	if(DEBUG){
-		printf("Sample Rate: %i, Bit Depth: %i, File Name: %s, Length: %i\n", sample_rate, bit_depth, out_file, length);
-	}
+	printf("Sample Rate: %i, Bit Depth: %i, File Name: %s, Length: %i\n", sample_rate, bit_depth, out_file, length);
 
 	//allocate the memory of the size we need
-	short int * x = NULL; 
+	short int * x; 
 	x = malloc(sample_rate*length*sizeof(short int));
 	if(x==NULL){
 		printf("malloc error");
@@ -61,7 +59,7 @@ int main(int argc, char ** argv){
 
 	if(DEBUG){
 		printf("malloc'd\n");
-		printf("%s\n", x);
+		printf("%X\n", x);
 	}
 
 	write_wav(out_file, sample_rate*length, x, sample_rate);
