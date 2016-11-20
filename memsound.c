@@ -9,7 +9,7 @@
 
 int main(int argc, char ** argv){
 
-	int DEBUG = 0;	
+	int DEBUG = 1;	
 	int length = 3;
 	int bit_depth = 16;
 	int sample_rate = 44100;
@@ -61,6 +61,7 @@ int main(int argc, char ** argv){
 
 	if(DEBUG){
 		printf("malloc'd\n");
+		printf("%s\n", x);
 	}
 
 	write_wav(out_file, sample_rate*length, x, sample_rate);
