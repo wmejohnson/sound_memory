@@ -1,15 +1,12 @@
-//wm johnson
-//reads bytes from memory and writes them into a wav file
-//10 25 16
-
 #include <stdio.h>
 #include <unistd.h>
 #include <stdlib.h>
 #include "make_wav.h"
 
+#define DEBUG 1
+
 int main(int argc, char ** argv){
 
-	int DEBUG = 1;	
 	int length = 3;
 	int bit_depth = 16;
 	int sample_rate = 44100;
@@ -49,6 +46,7 @@ int main(int argc, char ** argv){
 	
 	printf("Sample Rate: %i, Bit Depth: %i, File Name: %s, Length: %i\n", sample_rate, bit_depth, out_file, length);
 
+	/* OLD METHOD, NOW READING FROM /dev/mem */
 	//allocate the memory of the size we need
 	short int * x; 
 	x = malloc(sample_rate*length*sizeof(short int));
@@ -57,21 +55,28 @@ int main(int argc, char ** argv){
 		exit(1);
 	}
 
-	if(DEBUG){
-		printf("malloc'd\n");
-		printf("%X\n", x);
-	}
+	//open /dev/mem for reading
+	FILE * fp = fopen("/dev/mem", "r");
+	if( fp == NULL){
+		printf("could not open memory");
+		return 1;
+	} 
+
+	fseek(fp, SEEK_SET, 0xFF);
+
+	//write shorts into the arry	
+	fread(x, sizeof(short), length*sample_rate, fp);
+	printf("completed fread\n");	
+
+	//for(int i = 0; i < sample_rate*length; i++){
+	//	printf("%i\n", x[i]);
+	//}
 
 	write_wav(out_file, sample_rate*length, x, sample_rate);
+	printf("complete write_wav\n");
 
-	//close the file 
-	free(x);
+	fclose(fp);
 
-	if(DEBUG){
-		printf("were done!\n");
-	}
-
-	return(1);
+	return 0;
 }
-
 
